@@ -1,13 +1,9 @@
 package DataIngestion
 
-import java.io.FileNotFoundException
 import java.util.Properties
-
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions._
-
-import scala.io.Source
 import scala.io.Source.fromURL
 
 object IngestPostgres {
@@ -17,6 +13,10 @@ object IngestPostgres {
     properties.load(reader)
     val jdbcurl = properties.getProperty("postgres.connection.url")
     val table=properties.getProperty("postgres.tablename")
+    val connectionProperties = new Properties()
+    connectionProperties.setProperty("Driver", "org.postgresql.Driver")
+    connectionProperties.setProperty("user",properties.getProperty("postgres.username"))
+    connectionProperties.setProperty("password",properties.getProperty("postgres.password"))
 
     val sparkconf = new SparkConf().setAppName("IngestPostgres").setMaster("local")
     val sparksession = SparkSession.builder().config(sparkconf).getOrCreate()
@@ -31,10 +31,6 @@ object IngestPostgres {
         .withColumn("Wage",regexp_replace($"WageCurrency","[€,M,K]","").cast("Decimal") * 1000)
       .withColumn("Value",regexp_replace($"ValueCurrency","[€,M,K]","").cast("Decimal") * 1000000)
       .select($"Overall".cast("Int"),$"Position",$"Nationality",$"Name",$"Club",$"Wage",$"Value",$"Joined",$"Age")
-      val connectionProperties = new Properties()
-      connectionProperties.setProperty("Driver", "org.postgresql.Driver")
-      connectionProperties.setProperty("user",properties.getProperty("postgres.username"))
-      connectionProperties.setProperty("password",properties.getProperty("postgres.password"))
       FormatCols.write.jdbc(jdbcurl,table,connectionProperties)
   }
 }
