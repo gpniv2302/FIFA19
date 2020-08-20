@@ -36,12 +36,10 @@ object FIFA19Results {
         ,$"Interceptions",$"Positioning",$"Vision",$"Penalties",$"Composure",$"Marking",$"StandingTackle",$"SlidingTackle")
 
     TopClubWithLefFooter(sparksession,sqlcontext,FIFAData,OutputDir)
-    /*
     StrongestTeam(sparksession,sqlcontext,FIFAData,OutputDir)
     ExpensiveClub(sparksession,sqlcontext,FIFAData,OutputDir)
     PositionWage(sparksession,sqlcontext,FIFAData,OutputDir)
     GoalKeeperAttr(sparksession,sqlcontext,FIFAData,OutputDir)
     StrikerAttr(sparksession,sqlcontext,FIFAData,OutputDir)
-     */
   }
 }
